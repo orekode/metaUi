@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    @apply transition-all duration-300
+}
+
+.spacing {
+    @apply px-24 max-[800px]:px-12 max-w-[1920px] mx-auto max-[430px]:px-4;
+}
+
+.background-fixed {
+    background: var(--url),  linear-gradient(90deg, #0e0e0e, transparent);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+}
