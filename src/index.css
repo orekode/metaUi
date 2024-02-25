@@ -3,12 +3,55 @@
 @tailwind utilities;
 
 * {
-    @apply transition-all duration-300
+    @apply transition-all duration-300;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
 }
 
 .spacing {
     @apply px-24 max-[800px]:px-12 max-w-[1920px] mx-auto max-[430px]:px-4;
 }
+
+.spacing-y {
+    @apply py-12;
+}
+
+.grid-500 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+}
+
+@media only screen and (max-width: 500px) {
+    .grid-500 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.grid-450 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+}
+
+.grid-450.fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+}
+
+.grid-300 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-250 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.grid-250.fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
 
 .background-fixed {
     background: var(--url),  linear-gradient(90deg, #0e0e0e, transparent);
