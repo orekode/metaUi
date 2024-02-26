@@ -403,6 +403,28 @@ export const Card = ({ showDel = false, item={}, callback=()=>{}, type="image" }
     callback();
   }
 
+  const deleteItem = async () => {
+    set_loading_visible(true);
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await deletePageContent( item.id);
+        Swal.fire({...response, icon: response.status});
+        callback();
+      }
+      set_loading_visible(false);
+    });
+
+  }
+
   const previewImage = (event) => {
     const image = event.target.files[0];
     const url = URL.createObjectURL(image);
@@ -492,7 +514,7 @@ export const Card = ({ showDel = false, item={}, callback=()=>{}, type="image" }
       <div className="flex items-center gap-1">
         <button onClick={updateValues} className="flex-grow bg-blue-600 text-white rounded-xl px-2 h-[40px]">Done</button>
         {showDel && 
-          <button className="h-[40px] w-[40px] rounded-xl flex items-center justify-center bg-red-500 text-white">
+          <button onClick={deleteItem} className="h-[40px] w-[40px] rounded-xl flex items-center justify-center bg-red-500 text-white">
             <Trash />
           </button>
         }
