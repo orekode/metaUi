@@ -61,7 +61,7 @@ export const AuthLogout = async () => {
 export const preCookieFetch = async () => {
     
     try {
-        const response = await axos.get('http://localhost:8000/sanctum/csrf-cookie');
+        const response = await axos.get('https://api.metasfoundation.org/sanctum/csrf-cookie');
     } catch (error) {
         Swal.fire({
             icon: 'warning',
