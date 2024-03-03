@@ -97,7 +97,7 @@ return (
         <div className=""></div>
         <div className="">
           <EditPorts.Wrapper 
-            elementToShow={<EditPorts.Image
+            elementToShow={<EditPorts.ImageType
             item={{position}} 
             callback={() => get_group(position)} />} 
             isEditable={isEditable}
@@ -110,7 +110,7 @@ return (
       <div className="mt-6">
         <masonry-layout maxcolwidth="500">
           {group.map(item => 
-            <Card.Image key={item.id} item={item} isEditable={isEditable} callback={() => get_group(position)}/>
+            <Card.Image2 key={item.id} item={item} isEditable={isEditable} callback={() => get_group(position)}/>
           )}
         </masonry-layout>
       </div>

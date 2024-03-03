@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom"
 import { usePageDna } from "../store/pageContents";
 import { useHome } from "../store/pageContents/home";
-import { useEffect } from "react";
-import { Globe } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Globe, PlayCircle } from "lucide-react";
 import { EditPorts } from "./admin";
-
+import { getResourceType } from "../utls/files";
 
 
 export const Md = ({ position='home_card_one', btnIcon=<Globe />, isEditable=false }) => {
@@ -135,6 +135,56 @@ export const Image = ({ item= {url: '', title: '', content: '', link_label: '', 
                 </div>
 
                 <div className="bg-black bg-opacity-30 top-0 left-0 h-full w-full absolute"></div>
+            </div>
+        </EditPorts.Wrapper>
+    )
+}
+
+export const Image2 = ({ item= {url: '', title: '', content: '', link_label: '', link: ''}, isEditable=false, position='', callback=()=>{}}) => {
+
+    const [show, set_show] = useState(false);
+
+    return (
+        <EditPorts.Wrapper elementToShow={<EditPorts.ImageType showDel item={item} callback={callback} />} isEditable={isEditable}>
+            <div className="rounded-md overflow-hidden relative">
+                <div className="image h-full w-full overflow-hidden rounded-md">
+                    {(item.link == 'image' || !item.link) &&
+                        <img src={item.url} alt="" className="object-cover h-full w-full" />
+                    }
+                    {(item.link == 'video') &&
+                        <video src={item.url} alt="" className="object-cover h-full w-full" />
+                    }
+                </div>
+                <div className=" absolute p-4 bottom-0 left-0 w-full details backdrop-blur-md z-20 text-white">
+                    <div className="font-bold text-lg">{item.title}</div>
+
+                    <p className="text-sm leading-relaxed my-1">{item.content}</p>
+
+                    
+                    <button onClick={() => set_show(!show)} className="border-2 mt-2 shadow border-white bg-black bg-opacity-50 py-2 px-4 rounded-xl text-xs">Click To View</button>
+                    
+                </div>
+
+                <div className="bg-black bg-opacity-30 top-0 left-0 h-full w-full absolute flex items-center justify-center text-white">
+                    {item.link == "video" &&
+                        <PlayCircle size={60} />
+                    }
+                </div>
+                
+                {show &&
+                    <div className="fixed top-0 left-0 h-screen w-screen z-[60] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-md">
+                        <div className="h-[80vh] w-[80vw] relative z-10">
+                            {(item.link == 'image' || !item.link) &&
+                                <img src={item.url} alt="" className="object-contain h-full w-full shadow-xl border border-[#444] rounded-xl" />
+                            }
+                            {(item.link == 'video') &&
+                                <video src={item.url} alt="" className="object-contain h-full w-full shadow-xl border border-[#444] rounded-xl" controls autoPlay/>
+                            }
+                        </div>
+
+                        <div onClick={() => set_show(!show)} className="absolute top-0 left-0 h-full w-full z-0"></div>
+                    </div>
+                }
             </div>
         </EditPorts.Wrapper>
     )

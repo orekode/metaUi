@@ -18,7 +18,6 @@ const variants = {
   }
 }
 
-
 export const Wrapper = ({ children, elementToShow, isEditable, trigger }) => {
   return (
     <div className="relative">
@@ -30,8 +29,6 @@ export const Wrapper = ({ children, elementToShow, isEditable, trigger }) => {
     </div>
   )
 }
-
-
 
 export const Btn = ({ elementToShow, trigger }) => {
 
@@ -301,7 +298,7 @@ export const Image = ({ showDel = false, item={}, callback=()=>{}, type="image" 
         <div className="image-box w-[300px] h-[200px] rounded border-2 border-gray-400 relative text-white">
           <div onClick={() => input_ref.current.click()} className="absolute top-0 left-0 h-full w-full bg-black bg-opacity-40 flex items-center justify-center flex-col">
             <Upload size={60} />
-            <span className="font-black text-sm mt-1.5 capitalize">Click Me To Upload An {type}</span>
+            <span className="font-black text-sm mt-1.5 capitalize">Click Me To Upload {type == 'image' ? 'An' : 'A'} {type}</span>
           </div>
 
           {(values.url && type == "image") && 
@@ -368,6 +365,149 @@ export const Image = ({ showDel = false, item={}, callback=()=>{}, type="image" 
               value={values.link}
             />
           </div> */}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 mt-3">
+        <button onClick={updateValues} className="flex-grow bg-blue-600 text-white rounded-xl px-2 h-[40px]">Done</button>
+        {showDel && 
+          <button onClick={deleteItem} className="h-[40px] w-[40px] rounded-xl flex items-center justify-center bg-red-500 text-white">
+            <Trash />
+          </button>
+        }
+      </div>
+    </div>
+  );
+};
+
+export const ImageType = ({ showDel = false, item={}, callback=()=>{}, }) => {
+
+  const [ values, set_values ] = useState(item);
+
+  const [ type, set_type ] = useState(item.link ? item.link : 'image');
+
+  const [loading_visible, set_loading_visible] = useState(false);
+
+  const input_ref = useRef(null);
+
+  const updateValues = async () => {
+
+    set_loading_visible(true);
+
+    const response = await updatePageContent({...values, position: item.position, link: type}, item.id);
+
+    Swal.fire({...response, icon: response.status});
+
+    set_loading_visible(false);
+    callback();
+  }
+
+  const deleteItem = async () => {
+    set_loading_visible(true);
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await deletePageContent( item.id);
+        Swal.fire({...response, icon: response.status});
+        callback();
+      }
+      set_loading_visible(false);
+    });
+
+  }
+
+  const previewImage = (event) => {
+    const image = event.target.files[0];
+    const url = URL.createObjectURL(image);
+    set_values({...values, image, url })
+  }
+
+
+  return (
+    <div className=" bg-white text-black rounded-xl p-6">
+      <Loading show={loading_visible} />
+
+      <div className="flex items-center gap-6">
+
+        <div className="image-box w-[300px] h-[200px] rounded border-2 border-gray-400 relative text-white">
+          <div onClick={() => input_ref.current.click()} className="absolute top-0 left-0 h-full w-full bg-black bg-opacity-40 flex items-center justify-center flex-col">
+            <Upload size={60} />
+            <span className="font-black text-sm mt-1.5 capitalize">Click Me To Upload {type=='image' ? 'An' : 'A'} {type}</span>
+          </div>
+
+          {(values.url && type == "image") && 
+            <img src={values.url} className="h-full w-full object-cover" />
+          }
+
+          {(values.url && type != "image") && 
+            <video src={values.url} className="h-full w-full object-cover" />
+          }
+
+
+          {type == "image" ? 
+            <input ref={input_ref} type="file" accept="image/*" className="h-0 w-0 overflow-hidden p-0 m-0 opacity-0" onChange={previewImage}/> :
+            <input ref={input_ref} type="file" accept="video/*" className="h-0 w-0 overflow-hidden p-0 m-0 opacity-0" onChange={previewImage}/>
+          }
+
+        </div>
+
+        <div className="input-box">
+          <div className="input flex flex-col gap-1">
+            <label htmlFor="name" className="text-sm">Title</label>
+            <input 
+              type="text" 
+              name="title" 
+              id="title" 
+              className="shadow-xl border-2 border-gray-900 rounded-xl px-2 py-1 focus:border-transparent"
+              onChange={(event) => set_values({...values, title: event.target.value})}
+              value={values.title}
+            />
+          </div>
+
+          <div className="input flex flex-col gap-1 my-2">
+            <label htmlFor="name" className="text-sm">Content</label>
+            <textarea 
+              type="text" 
+              name="content" 
+              id="content" 
+              className="shadow-xl border-2 border-gray-900 rounded-xl px-2 py-1 focus:border-transparent"
+              onChange={(event) => set_values({...values, content: event.target.value})}
+              value={values.content}
+            />
+          </div>
+
+          <div className="input flex flex-col gap-1">
+            <label htmlFor="name" className="text-sm">Link Label</label>
+            <input 
+              type="text" 
+              name="link_label" 
+              id="link_label" 
+              className="shadow-xl border-2 border-gray-900 rounded-xl px-2 py-1 focus:border-transparent"
+              onChange={(event) => set_values({...values, link_label: event.target.value})}
+              value={values.link_label}
+            />
+          </div>
+
+          <div className="input flex flex-col gap-1 my-2">
+            <label htmlFor="name" className="text-sm">Type</label>
+            <select
+              name="type" 
+              id="type" 
+              className="shadow-xl border-2 border-gray-900 rounded-xl px-2 py-1 focus:border-transparent" 
+              onChange={(event) => set_type(event.target.value)}
+            >
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+            </select>
+          </div>
         </div>
       </div>
 
